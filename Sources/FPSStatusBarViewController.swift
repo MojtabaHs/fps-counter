@@ -116,8 +116,8 @@ public extension FPSCounter {
 
         if let controller = window.rootViewController as? FPSStatusBarViewController {
             controller.fpsCounter.startTracking(
-                inRunLoop: runloop ?? RunLoop.main,
-                mode: mode ?? RunLoopMode.commonModes
+                inRunLoop: runloop ?? .main,
+                mode: mode ?? .commonModes
             )
         }
     }
