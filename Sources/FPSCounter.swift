@@ -40,7 +40,7 @@ public class FPSCounter: NSObject {
         /// - Parameters:
         ///   - displayLink: The display link that updated
         ///
-        func updateFromDisplayLink(_ displayLink: CADisplayLink) {
+        @objc func updateFromDisplayLink(_ displayLink: CADisplayLink) {
             self.parentCounter?.updateFromDisplayLink(displayLink)
         }
     }
@@ -49,6 +49,8 @@ public class FPSCounter: NSObject {
     // MARK: - Initialization
 
     private let displayLink: CADisplayLink
+
+    // swiftlint:disable:next weak_delegate
     private let displayLinkDelegate: DisplayLinkDelegate
 
     /// Create a new FPSCounter.
