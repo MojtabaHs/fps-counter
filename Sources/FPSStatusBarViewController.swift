@@ -49,19 +49,42 @@ internal class FPSStatusBarViewController: UIViewController, FPSCounterDelegate 
     override func loadView() {
         self.view = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0))
 
-        self.label.frame = self.view.bounds.insetBy(dx: 10.0, dy: 0.0)
-        self.label.autoresizingMask = [ .flexibleWidth, .flexibleHeight ]
         self.label.font = UIFont.boldSystemFont(ofSize: 10.0)
+        self.label.translatesAutoresizingMaskIntoConstraints = false
+
         self.view.addSubview(self.label)
+        self.view.addConstraints([
+            self.constrainLabel(attribute: .leading, constant: 24.0),
+            self.constrainLabel(attribute: .trailing, constant: -24.0),
+            self.constrainLabel(attribute: .bottom, constant: -1.0)
+        ])
 
         self.fpsCounter.delegate = self
     }
 
+    private func constrainLabel(attribute: NSLayoutAttribute, constant: CGFloat) -> NSLayoutConstraint {
+        let constraint = NSLayoutConstraint(
+            item: self.label, attribute: attribute,
+            relatedBy: .equal,
+            toItem: self.view, attribute: attribute,
+            multiplier: 1.0, constant: constant
+        )
+        constraint.priority = UILayoutPriority(rawValue: 999)
+        return constraint
+    }
+
     @objc func updateStatusBarFrame(_ notification: Notification) {
         let application = notification.object as? UIApplication
-        let frame = CGRect(x: 0.0, y: 0.0, width: application?.keyWindow?.bounds.width ?? 0.0, height: 20.0)
 
-        FPSStatusBarViewController.statusBarWindow.frame = frame
+        DispatchQueue.main.async {
+            let statusBarWidth = application?.keyWindow?.bounds.width ?? 0.0
+            let statusBarHeight = max(application?.statusBarFrame.height ?? 0.0, 20.0)
+            let frame = CGRect(x: 0.0, y: 0.0, width: statusBarWidth, height: statusBarHeight)
+
+            print("New status bar frame: \(frame)")
+
+            FPSStatusBarViewController.statusBarWindow.frame = frame
+        }
     }
 
 
